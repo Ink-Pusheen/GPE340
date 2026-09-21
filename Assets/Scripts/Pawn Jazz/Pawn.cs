@@ -11,6 +11,8 @@ public abstract class Pawn : MonoBehaviour
 
     public float moveSpeed = 6f;
 
+    public float rotateSpeed = 6f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,6 +20,8 @@ public abstract class Pawn : MonoBehaviour
     }
 
     public abstract void Move(Vector3 direction);
+
+    public abstract void RotateTowards(Vector3 rotateDirection);
 
     //Possession
     public abstract void Possess(Controller newController);

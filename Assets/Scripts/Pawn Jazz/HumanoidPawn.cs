@@ -19,12 +19,16 @@ public class HumanoidPawn : Pawn
 
     public override void Move(Vector3 direction)
     {
-        Vector3 normalized = Vector3.ClampMagnitude(direction.normalized * moveSpeed, 1);
+        Vector3 normalizedDirection = Vector3.ClampMagnitude(direction.normalized, 1); //Normalize the direction
+
+        normalizedDirection *= moveSpeed; //Multiply the movespeed
+
+        normalizedDirection = transform.InverseTransformDirection(normalizedDirection);
 
         //Set movement parameters based on vector input for animation purposes
 
-        anim.SetFloat("XInput", normalized.x);
-        anim.SetFloat("ZInput", normalized.z);
+        anim.SetFloat("XInput", normalizedDirection.x);
+        anim.SetFloat("ZInput", normalizedDirection.z);
     }
 
     public override void Possess(Controller newController)
@@ -35,5 +39,14 @@ public class HumanoidPawn : Pawn
     public override void UnPossess()
     {
         owningController = null;
+    }
+
+    public override void RotateTowards(Vector3 rotateDirection)
+    {
+        Vector3 vectorToPoint =  transform.position - rotateDirection;
+
+        Quaternion lookRotation = Quaternion.FromToRotation(transform.position, vectorToPoint);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, rotateSpeed);
     }
 }
