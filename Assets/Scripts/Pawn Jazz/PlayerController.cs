@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -57,7 +58,7 @@ public class PlayerController : Controller
 
         Vector2 mousePos = Mouse.current.position.value;
 
-        Vector3 raySPTR = new Vector3(mousePos.x, mousePos.y, 10f);
+        Vector3 raySPTR = new Vector3(mousePos.x, mousePos.y, ownedPawn.transform.position.z);
 
         Ray mouseRay = new();
         mouseRay = mainCam.ScreenPointToRay(raySPTR);
@@ -67,6 +68,7 @@ public class PlayerController : Controller
         {
             //If we hit the plane
             Vector3 hitPosition = mouseRay.GetPoint(hitDistance); //Grab the point of contact
+            //Debug.Log(hitPosition);
 
             //Rotate towards said position
             ownedPawn.RotateTowards(hitPosition);
@@ -80,7 +82,7 @@ public class PlayerController : Controller
             //Perhaps doing nothing will be best
         }
 
-        Debug.Log(footPlane);
+        //Debug.Log(footPlane);
     }
 
     public override void PossessPawn(Pawn inPawnPossession)
