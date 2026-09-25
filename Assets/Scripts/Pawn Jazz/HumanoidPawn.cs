@@ -60,5 +60,26 @@ public class HumanoidPawn : Pawn
         //Set the root position and rotation
         transform.position = anim.rootPosition;
         transform.rotation = anim.rootRotation;
+
+        //Grab the navmesh agent
+        AIController AIcontroller = owningController as AIController; //This creats an explicit cast looking for a sub type of child script
+
+        if (AIcontroller is not null)
+        {
+            //Set the nav mesh agent updated position respective to the animator
+            AIcontroller.navAgent.nextPosition = anim.rootPosition;
+        }
+    }
+
+    //Set animator booleans from the controller
+    public void SetAnimatorBoolean(string Parameter, bool Value)
+    {
+        anim.SetBool(Parameter, Value);
+    }
+
+    //Set animator triggers from the controller
+    public void SetTrigger(string Parameter)
+    {
+        anim.SetTrigger(Parameter);
     }
 }
