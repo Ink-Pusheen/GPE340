@@ -6,8 +6,10 @@ public class HumanoidPawn : Pawn
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Start()
     {
+        selfPawn = this as HumanoidPawn;
+
         //Grab components
         anim = GetComponent<Animator>();
     }
@@ -49,5 +51,14 @@ public class HumanoidPawn : Pawn
         Quaternion lookRotation = Quaternion.LookRotation(vectorToPoint, Vector3.up);
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, rotateSpeed * Time.deltaTime);
+    }
+
+
+    //This is run after the animation runs
+    public void OnAnimatorMove()
+    {
+        //Set the root position and rotation
+        transform.position = anim.rootPosition;
+        transform.rotation = anim.rootRotation;
     }
 }
