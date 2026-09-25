@@ -12,7 +12,9 @@ public class PlayerController : Controller
     //Actions
     private InputAction horizontal;
     private InputAction vertical;
-    private InputAction rotation; //Controller rotation
+
+    private InputAction leftJoystickMovement;
+    private InputAction rightJoystickRotation;
 
     private InputAction crouch;
     private bool bCrouching; //Is the player currently crouching?
@@ -34,7 +36,9 @@ public class PlayerController : Controller
         {
             horizontal = pInput.actions.FindAction("Horizontal");
             vertical = pInput.actions.FindAction("Vertical");
-            rotation = pInput.actions.FindAction("Rotation");
+
+            leftJoystickMovement = pInput.actions.FindAction("LeftJoystick");
+            rightJoystickRotation = pInput.actions.FindAction("RightJoystick");
 
             crouch = pInput.actions.FindAction("Crouch");
 
@@ -58,15 +62,15 @@ public class PlayerController : Controller
 
     public override void Decisions()
     {
-        float horizontalInput = horizontal.ReadValue<float>();
-        float verticalInput = vertical.ReadValue<float>();
-
-        Vector3 moveVector = new Vector3(horizontalInput, 0, verticalInput);
-
-        if (!bDancing) ownedPawn.Move(moveVector);
-
         if (!bUsingController) //Not using Controller
         {
+            float horizontalInput = horizontal.ReadValue<float>();
+            float verticalInput = vertical.ReadValue<float>();
+
+            Vector3 moveVector = new Vector3(horizontalInput, 0, verticalInput);
+
+            if (!bDancing) ownedPawn.Move(moveVector);
+
             //T'do: Find point on foot plane that the mouse overlaps, rotate towards
             Plane footPlane;
 
@@ -100,11 +104,21 @@ public class PlayerController : Controller
         }
         else //Using controller
         {
-            Vector2 newRotation = rotation.ReadValue<Vector2>(); //Read the controller input
+            Vector2 Input = leftJoystickMovement.ReadValue<Vector2>();
+            float verticalInput = vertical.ReadValue<float>();
 
-            Vector3 rotateTowards = new Vector3(newRotation.x + 1, ownedPawn.transform.position.y, newRotation.y + 1); //Set to a vector3
+            Vector3 moveVector = new Vector3(Input.x, 0, Input.y);
 
-            ownedPawn.RotateTowards(rotateTowards);
+            if (!bDancing) ownedPawn.Move(moveVector);
+
+            Vector2 newRotation = rightJoystickRotation.ReadValue<Vector2>(); //Read the controller input
+
+            if (newRotation.x is not 0 || newRotation.y is not 0) //Check that this is actual input before proceeding
+            {
+                Vector3 rotateTowards = new Vector3(ownedPawn.transform.position.x + newRotation.x, ownedPawn.transform.position.y, ownedPawn.transform.position.z + newRotation.y); //Set to a vector3
+
+                ownedPawn.RotateTowards(rotateTowards); //Rotate towards the input
+            }
         }
 
         //Toggle the crouched state

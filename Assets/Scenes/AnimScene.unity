@@ -1035,7 +1035,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   ownedPawn: {fileID: 1408616660}
-  bUsingController: 0
+  bUsingController: 1
 --- !u!4 &1063113253
 Transform:
   m_ObjectHideFlags: 0
