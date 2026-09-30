@@ -30,6 +30,10 @@ public class PlayerController : Controller
 
     [SerializeField] bool bUsingController; //Is input being read by a controller for aim commands?
 
+    [Header("Attributes")]
+
+    [SerializeField] private int Lives = 3;
+
     private void Awake()
     {
         pInput = GetComponent<PlayerInput>(); //Attempt to grab the component
@@ -172,13 +176,21 @@ public class PlayerController : Controller
     public override void PossessPawn(Pawn inPawnPossession)
     {
         //Set code to unpossess previous pawn
-        if (ownedPawn != null) ownedPawn.UnPossess();
+        if (ownedPawn != null)
+        {
+            RemoveListeners(); //Remove any possible listeners before unpossessing
+
+            ownedPawn.UnPossess(); //Unpossess
+        }
 
         //Possess new pawn
         ownedPawn = inPawnPossession;
 
         //Tell the new pawn this is the new controller
         ownedPawn.Possess(this);
+
+        //Check if pawn has health component, attaching the lose life function via observation pattern
+        AddListeners();
     }
 
     /// <summary>
@@ -186,7 +198,45 @@ public class PlayerController : Controller
     /// </summary>
     public override void UnPossessPawn()
     {
+        //If pawn has hp component, unsubscribe from the unity event
+        RemoveListeners();
+
         ownedPawn.UnPossess(); //Tell the pawn to unpossess itself
         ownedPawn = null; //Null the controllers pawn
+    }
+
+    /// <summary>
+    /// Add Listeners
+    /// </summary>
+    public void AddListeners()
+    {
+        //Check if pawn has health component, attaching the lose life function via observation pattern
+        Health hp = ownedPawn.GetComponent<Health>();
+
+        if (hp is not null) //Null check
+        {
+            hp.OnDeath.AddListener(LoseLife);
+        }
+    }
+
+    /// <summary>
+    /// Remove Listeners
+    /// </summary>
+    public void RemoveListeners()
+    {
+        //If pawn has hp component, unsubscribe from the unity event
+        Health hp = ownedPawn.GetComponent<Health>();
+
+        if (hp is not null) //Null check
+        {
+            hp.OnDeath.RemoveListener(LoseLife);
+        }
+    }
+
+    // Life functions
+
+    public void LoseLife()
+    {
+        Lives--; //Decrement the lives
     }
 }
