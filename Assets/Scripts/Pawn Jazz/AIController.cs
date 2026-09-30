@@ -5,17 +5,23 @@ public class AIController : Controller
 {
     [Header("Navmesh")]
 
+    [Tooltip("Navigation Agent for the currently possesed AI Humanoid Pawn")]
     public NavMeshAgent navAgent; //Agent for this AI for navigation
 
+    [Tooltip("The target in which this AI will set as it's destination")]
     [SerializeField] GameObject Target; //Target in which the AI will head towards
 
 
     [Header("Attributes")]
 
+    [Tooltip("Range at which the Nav Agent will stop from its Target"), Range(1f, 20f)]
     [SerializeField] float stopDistance; //How far the agent stops from the target
 
-    private Vector3 desiredVelocity = Vector3.zero; //??? I get it's what the ai is looking for... but what does this change? Oh, pawn movement
+    private Vector3 desiredVelocity = Vector3.zero; //Real time velocity that the movement will consider when conducting root motion
 
+    /// <summary>
+    /// Update function for the AI to make decisions during real time
+    /// </summary>
     public override void Decisions()
     {
         //Null check for the pawn
@@ -34,6 +40,10 @@ public class AIController : Controller
         ownedPawn.RotateTowards(Target.transform.position);
     }
 
+    /// <summary>
+    /// Possess the parameter Pawn, Unpossessing the prior if one is Possessed
+    /// </summary>
+    /// <param name="inPawnPossession"></param>
     public override void PossessPawn(Pawn inPawnPossession)
     {
         //Set code to unpossess previous pawn
@@ -54,6 +64,10 @@ public class AIController : Controller
         navAgent.updateRotation = false;
     }
 
+    /// <summary>
+    /// Unpossess the current pawn
+    /// Null the current nav agent
+    /// </summary>
     public override void UnPossessPawn()
     {
         ownedPawn.UnPossess(); //Tell the pawn to unpossess itself
