@@ -24,6 +24,8 @@ public class PlayerController : Controller
     private InputAction dance; //Input to dance and stop dancing
     private bool bDancing; //Is the player currently dancing?
 
+    private InputAction fire; //Input for firing a currently held weapon
+
     [Header("Camera")]
 
     private Camera mainCam; //Assignment of the main camera within the scene
@@ -51,6 +53,8 @@ public class PlayerController : Controller
             crouch = pInput.actions.FindAction("Crouch");
 
             dance = pInput.actions.FindAction("Dance");
+
+            fire = pInput.actions.FindAction("Fire");
         }
 
 
@@ -165,6 +169,25 @@ public class PlayerController : Controller
                 pawn.SetAnimatorBoolean("Dance", bDancing); //Set the new value
             }
             else Debug.Log("Missing Pawn"); //Testing for Developers
+        }
+
+        //Weapon functionality
+        if(fire.WasPressedThisFrame())
+        {
+            //Check that the pawn and held weapon isn't null
+            if (ownedPawn is not null && ownedPawn.heldWeapon is not null)
+            {
+                ownedPawn.heldWeapon.OnPrimaryFireStart.Invoke(); //Invoke the firing start event
+            }
+        }
+
+        if (fire.WasReleasedThisFrame())
+        {
+            //Check that the pawn and held weapon isn't null
+            if (ownedPawn is not null && ownedPawn.heldWeapon is not null)
+            {
+                ownedPawn.heldWeapon.OnPrimaryFireEnd.Invoke(); //Invoke the firing end event
+            }
         }
     }
 

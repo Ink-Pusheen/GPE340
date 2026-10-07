@@ -18,6 +18,11 @@ public abstract class Pawn : MonoBehaviour
     [Tooltip("The speed at which this pawn will rotate towards its target")]
     public float rotateSpeed = 6f;
 
+    [Header("Weaponry")]
+
+    [Tooltip("Currently held and active Weapon")]
+    public Weapon heldWeapon;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public abstract void Start();
 

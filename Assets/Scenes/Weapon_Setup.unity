@@ -311,7 +311,7 @@ MonoBehaviour:
     color: {r: 0.4, g: 0.2, b: 0.6, a: 1}
     lifespawn: 0.1
     width: 0.5
-  laserPrefab: {fileID: 0}
+  laserPrefab: {fileID: 464810597050775690, guid: 8c0fc6e723addba43a17f4e5c69a1bb2, type: 3}
 --- !u!114 &987244594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,8 +332,20 @@ MonoBehaviour:
       m_Calls: []
   OnPrimaryFireStart:
     m_PersistentCalls:
-      m_Calls: []
-  OnPrimaryFirstEnd:
+      m_Calls:
+      - m_Target: {fileID: 987244593}
+        m_TargetAssemblyTypeName: WeaponAction, Assembly-CSharp
+        m_MethodName: Shoot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnPrimaryFireEnd:
     m_PersistentCalls:
       m_Calls: []
   OnSecondaryFireStart:

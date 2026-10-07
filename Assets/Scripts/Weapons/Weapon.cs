@@ -9,7 +9,7 @@ public class Weapon : MonoBehaviour
     public UnityEvent OnEquip;
     public UnityEvent OnUnequip;
     public UnityEvent OnPrimaryFireStart;
-    public UnityEvent OnPrimaryFirstEnd;
+    public UnityEvent OnPrimaryFireEnd;
     public UnityEvent OnSecondaryFireStart;
     public UnityEvent OnSecondaryFireEnd;
 
@@ -20,7 +20,7 @@ public class Weapon : MonoBehaviour
 
     public void PrimaryFireStart() { OnPrimaryFireStart.Invoke(); }
 
-    public void PrimaryFireEnd() { OnPrimaryFirstEnd.Invoke(); }
+    public void PrimaryFireEnd() { OnPrimaryFireEnd.Invoke(); }
 
     public void SecondaryFireStart() { OnSecondaryFireStart.Invoke(); }
 
