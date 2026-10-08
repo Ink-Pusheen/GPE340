@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class LaserBeam : MonoBehaviour
 {
     public Vector3 startPoint;
