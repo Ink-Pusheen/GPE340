@@ -98,6 +98,63 @@ public class HumanoidPawn : Pawn
     }
 
     /// <summary>
+    /// IK Functionality after the animation frame plays
+    /// </summary>
+    /// <param name="layerIndex"></param>
+    public void OnAnimatorIK(int layerIndex)
+    {
+        //Nope, no weapon is held, follow the animation
+        if (heldWeapon is null)
+        {
+            anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 0f);
+            anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 0f);
+
+            anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0f);
+            anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0f);
+        }
+        else //A weapon exists
+        {
+            //If a right hand point exists
+            if (heldWeapon.rightHand != null)
+            {
+                //Set the IK weights to 1
+                anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
+                anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
+
+                //Set the position and rotation of the weapon data
+                anim.SetIKPosition(AvatarIKGoal.RightHand, heldWeapon.rightHand.position);
+                anim.SetIKRotation(AvatarIKGoal.RightHand, heldWeapon.rightHand.rotation);
+            }
+            else
+            {
+                //Follow what the animator says
+                anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 0f);
+                anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 0f);
+            }
+
+            //If a left hand point exists
+            if (heldWeapon.leftHand != null)
+            {
+                //Set the IK weights to 1
+                anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
+                anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
+
+                //Set the position and rotation of the weapon data
+                anim.SetIKPosition(AvatarIKGoal.LeftHand, heldWeapon.leftHand.position);
+                anim.SetIKRotation(AvatarIKGoal.LeftHand, heldWeapon.leftHand.rotation);
+            }
+            else
+            {
+                //Follow what the animator says
+                anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0f);
+                anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0f);
+            }
+        }
+
+        
+    }
+
+    /// <summary>
     /// Set an animator boolean via the parameter name
     /// </summary>
     /// <param name="Parameter"></param>

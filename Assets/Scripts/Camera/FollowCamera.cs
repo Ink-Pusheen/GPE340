@@ -4,10 +4,10 @@ public class FollowCamera : MonoBehaviour
 {
     [Header("Camera Attributes")]
 
-    [SerializeField] GameObject ObjectToFollow; //The object that this camera will be following
+    [SerializeField] private GameObject ObjectToFollow; //The object that this camera will be following
 
     [Tooltip("Offset at which the Camera will add while following the target")]
-    [SerializeField] Vector3 offset; //Offset of the camera
+    public Vector3 offset;
 
     // Update is called once per frame
     void Update()

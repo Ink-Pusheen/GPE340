@@ -2,9 +2,12 @@ using UnityEngine;
 using UnityEngine.Events;
 public class Weapon : MonoBehaviour
 {
+    [Header("Inverse Kinematics")]
 
+    public Transform leftHand; //Position for the left hand
+    public Transform rightHand; //Position for the right hand
 
-    // Unity Events
+    [Header("Unity Events")]
 
     public UnityEvent OnEquip;
     public UnityEvent OnUnequip;

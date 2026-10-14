@@ -4,15 +4,15 @@ public class ExplosionBehavior : MonoBehaviour
 {
     [Header("Attributes")]
 
-    [SerializeField] float ExplosionForce; //How much force this object emits
-    [SerializeField] float ExplosionDamage; //How much damage this deals
+    [SerializeField] private float ExplosionForce; //How much force this object emits
+    [SerializeField] private float ExplosionDamage; //How much damage this deals
 
-    [SerializeField] float ExplosionDistance; //How far does this explosion reach?
+    [SerializeField] private float ExplosionDistance; //How far does this explosion reach?
 
     [Header("Effects")]
 
-    [SerializeField] GameObject ExplosionEffects; //Explosion particles
-    [SerializeField] AudioClip ExplosionSound; //Sound of the explosion
+    [SerializeField] private GameObject ExplosionEffects; //Explosion particles
+    [SerializeField] private AudioClip ExplosionSound; //Sound of the explosion
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

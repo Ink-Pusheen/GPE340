@@ -5,8 +5,8 @@ public class Health : MonoBehaviour
 {
     [Header("Attributes")]
 
-    [SerializeField] float currentHealth; //Current health of the pawn
-    [SerializeField] float maxHealth; //Max health of the pawn
+    [SerializeField] private float currentHealth; //Current health of the pawn
+    [SerializeField] private float maxHealth; //Max health of the pawn
 
     [Header("Events")]
 

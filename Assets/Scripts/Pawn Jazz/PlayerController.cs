@@ -30,7 +30,7 @@ public class PlayerController : Controller
 
     private Camera mainCam; //Assignment of the main camera within the scene
 
-    [SerializeField] bool bUsingController; //Is input being read by a controller for aim commands?
+    [SerializeField] private bool bUsingController; //Is input being read by a controller for aim commands?
 
     [Header("Attributes")]
 
