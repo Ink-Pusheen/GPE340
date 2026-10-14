@@ -329,7 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WA_AmmoClip
   firePoint: {fileID: 0}
   currentAmmo: 0
-  ammoPerFire: 1
+  ammoPerFire: 0
   maxAmmo: 15
   OnFireSuccess:
     m_PersistentCalls:
@@ -1283,6 +1283,7 @@ GameObject:
   - component: {fileID: 1063113253}
   - component: {fileID: 1063113252}
   - component: {fileID: 1063113254}
+  - component: {fileID: 1063113255}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Untagged
@@ -1303,6 +1304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   ownedPawn: {fileID: 1408616660}
+  bAllowedInput: 1
   bUsingController: 0
   Lives: 3
 --- !u!4 &1063113253
@@ -1350,6 +1352,19 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1063113255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063113251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1e04061bc3b6045bf9da4bbe0f4fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyOnDeath
+  meshRender: {fileID: 0}
 --- !u!1 &1258864284
 GameObject:
   m_ObjectHideFlags: 0
@@ -2580,6 +2595,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1944336034}
   - component: {fileID: 1944336033}
+  - component: {fileID: 1944336035}
   m_Layer: 0
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -2600,6 +2616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIController
   ownedPawn: {fileID: 1454883436}
+  bAllowedInput: 1
   navAgent: {fileID: 1454883430}
   Target: {fileID: 919132148590388880}
   stopDistance: 2.5
@@ -2618,6 +2635,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1944336035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944336032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1e04061bc3b6045bf9da4bbe0f4fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyOnDeath
+  meshRender: {fileID: 0}
 --- !u!1 &1945803211
 GameObject:
   m_ObjectHideFlags: 0
@@ -3716,6 +3746,8 @@ GameObject:
   - component: {fileID: 1454883433}
   - component: {fileID: 1454883432}
   - component: {fileID: 1454883430}
+  - component: {fileID: 5866666020595793911}
+  - component: {fileID: 5866666020595793910}
   m_Layer: 0
   m_Name: AIEnemy
   m_TagString: Untagged
@@ -3737,6 +3769,7 @@ GameObject:
   - component: {fileID: 1408616662}
   - component: {fileID: 1408616661}
   - component: {fileID: 5866666021402879569}
+  - component: {fileID: 5866666021402879570}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -6500,6 +6533,87 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5866666020595793910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148327972661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1e04061bc3b6045bf9da4bbe0f4fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyOnDeath
+  meshRender: {fileID: 0}
+--- !u!114 &5866666020595793911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148327972661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c367a22ff8f6c46a298c4dd2e0b1b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  currentHealth: 0
+  maxHealth: 5
+  OnTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1944336035}
+        m_TargetAssemblyTypeName: DestroyOnDeath, Assembly-CSharp
+        m_MethodName: QueueDeterioration
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1944336033}
+        m_TargetAssemblyTypeName: AIController, Assembly-CSharp
+        m_MethodName: DisableInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1454883436}
+        m_TargetAssemblyTypeName: HumanoidPawn, Assembly-CSharp
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Death
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5866666020595793910}
+        m_TargetAssemblyTypeName: DestroyOnDeath, Assembly-CSharp
+        m_MethodName: QueueDeterioration
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Death
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &5866666021402879568
 Animator:
   serializedVersion: 7
@@ -6542,18 +6656,67 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
+      - m_Target: {fileID: 5866666021402879570}
+        m_TargetAssemblyTypeName: DestroyOnDeath, Assembly-CSharp
+        m_MethodName: QueueDeterioration
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1063113255}
+        m_TargetAssemblyTypeName: DestroyOnDeath, Assembly-CSharp
+        m_MethodName: QueueDeterioration
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Death
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1063113252}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: DisableInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1408616660}
+        m_TargetAssemblyTypeName: HumanoidPawn, Assembly-CSharp
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Death
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5866666021402879570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148590388880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1e04061bc3b6045bf9da4bbe0f4fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyOnDeath
+  meshRender: {fileID: 0}
 --- !u!4 &6142095154144350873
 Transform:
   m_ObjectHideFlags: 0

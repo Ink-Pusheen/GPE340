@@ -40,6 +40,8 @@ public class Health : MonoBehaviour
 
         //Run the on damage taken Unity Event
         OnTakeDamage.Invoke();
+
+        if (currentHealth <= 0) Death(); //Run the death function if health has hit th threshold
     }
 
     public void Death()

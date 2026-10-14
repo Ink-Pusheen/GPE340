@@ -24,6 +24,9 @@ public class AIController : Controller
     /// </summary>
     public override void Decisions()
     {
+        //Ensure that input can be taken first
+        if (!bAllowedInput) return;
+
         //Null check for the pawn
         if (ownedPawn == null) return;
         //Debug.Log("Pawn Exists, DO SOMETHING"); //Forgot to make Decisions() run... whoops... Debug testing

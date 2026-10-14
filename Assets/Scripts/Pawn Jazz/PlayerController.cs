@@ -69,6 +69,9 @@ public class PlayerController : Controller
     // Update is called once per frame
     void Update()
     {
+        //Ensure that input can be taken first
+        if (!bAllowedInput) return;
+
         Decisions(); //Conduct all input of the player during runtime
     }
 
