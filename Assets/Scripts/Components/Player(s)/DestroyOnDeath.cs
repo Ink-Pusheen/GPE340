@@ -1,14 +1,38 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Health))]
 public class DestroyOnDeath : MonoBehaviour
 {
-    [SerializeField] SkinnedMeshRenderer meshRender; //A render of the gameobject if applicable
+    [SerializeField] private SkinnedMeshRenderer meshRender; //A render of the gameobject if applicable
+
+    [SerializeField] private bool bController; //Is this a controller to destroy?
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         meshRender = GetComponentInChildren<SkinnedMeshRenderer>(); //Grab the mesh renderer component
+
+        Health objectHP = GetComponent<Health>(); //Grab the health component
+
+        //Ensure it's not null before subscribing automatically
+        if (objectHP is not null && !bController) objectHP.OnDeath.AddListener(QueueDeterioration);
+
+        else
+        {
+            //Try grabbing the AI controller to subscribe
+            AIController controller = GetComponent<AIController>();
+
+            //Null Checks
+            if (controller is not null && controller.ownedPawn is not null)
+            {
+                //Attempt one last connection
+                objectHP = controller.ownedPawn.gameObject.GetComponent<Health>();
+
+                //Subscribe once connected if found
+                if (objectHP is not null) objectHP.OnDeath.AddListener(QueueDeterioration);
+            }
+        }
     }
 
     //Public function to blink the body before destroying it

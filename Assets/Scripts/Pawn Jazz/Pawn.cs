@@ -23,6 +23,12 @@ public abstract class Pawn : MonoBehaviour
     [Tooltip("Currently held and active Weapon")]
     public Weapon heldWeapon;
 
+    [Tooltip("The Closest weapon at any given time")]
+    public GameObject interactbleInRange;
+
+    [Tooltip("Position where Weaponry is held")]
+    public Transform weaponHoldPosition;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public abstract void Start();
 
@@ -52,4 +58,14 @@ public abstract class Pawn : MonoBehaviour
     /// Remove and null the currently possessing controller if there is one
     /// </summary>
     public abstract void UnPossess();
+
+    /// <summary>
+    /// Grab the item in range if any exist
+    /// </summary>
+    public abstract void GrabWeapon();
+
+    /// <summary>
+    /// Drop the currently held weapon if any exist
+    /// </summary>
+    public abstract void DropWeapon();
 }

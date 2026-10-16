@@ -26,6 +26,9 @@ public class PlayerController : Controller
 
     private InputAction fire; //Input for firing a currently held weapon
 
+    private InputAction grabWeapon; //Input for grabbing nearby weaponry
+    private InputAction dropWeapon; //Input to drop held weaponry
+
     [Header("Camera")]
 
     private Camera mainCam; //Assignment of the main camera within the scene
@@ -55,6 +58,9 @@ public class PlayerController : Controller
             dance = pInput.actions.FindAction("Dance");
 
             fire = pInput.actions.FindAction("Fire");
+
+            grabWeapon = pInput.actions.FindAction("GrabWeapon");
+            dropWeapon = pInput.actions.FindAction("DropWeapon");
         }
 
 
@@ -192,6 +198,27 @@ public class PlayerController : Controller
                 ownedPawn.heldWeapon.OnPrimaryFireEnd.Invoke(); //Invoke the firing end event
             }
         }
+
+        // Pickup and Drop Functionality
+
+        if (grabWeapon.WasPressedThisFrame())
+        {
+            //Check the player exists and they have something in range
+            if (ownedPawn is not null && ownedPawn.interactbleInRange != null)
+            {
+                ownedPawn.GrabWeapon();
+            }
+        }
+
+        if (dropWeapon.WasPressedThisFrame())
+        {
+            //Check the player exists and they have a weapon
+            if (ownedPawn is not null && ownedPawn.heldWeapon is not null)
+            {
+                ownedPawn.DropWeapon();
+            }
+        }
+
     }
 
     /// <summary>
