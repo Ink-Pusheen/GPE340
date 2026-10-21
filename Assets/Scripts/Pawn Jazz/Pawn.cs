@@ -68,4 +68,9 @@ public abstract class Pawn : MonoBehaviour
     /// Drop the currently held weapon if any exist
     /// </summary>
     public abstract void DropWeapon();
+
+    /// <summary>
+    /// Forcefully equipts a given weapon 
+    /// </summary>
+    public abstract void SpawnWeapon(Weapon weaponSpawned);
 }

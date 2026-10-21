@@ -51,4 +51,11 @@ public class Health : MonoBehaviour
         //Run the on death Unity Event
         OnDeath.Invoke();
     }
+
+    // Set attributes
+
+    public void SetMaxHealth(float newMaxHealth)
+    {
+        maxHealth = newMaxHealth;
+    }
 }

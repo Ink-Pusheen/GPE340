@@ -298,4 +298,21 @@ public class HumanoidPawn : Pawn
             InteractionDetection();
         }
     }
+
+    public override void SpawnWeapon(Weapon weaponSpawned)
+    {
+        //Set the new weapon reference
+        heldWeapon = weaponSpawned;
+
+        //Set the weapon position, rotation, and parent
+        heldWeapon.gameObject.transform.position = weaponHoldPosition.transform.position;
+        heldWeapon.gameObject.transform.rotation = weaponHoldPosition.transform.rotation;
+        heldWeapon.gameObject.transform.parent = weaponHoldPosition.gameObject.transform;
+
+        //Invoke the on equipt for the weapon
+        heldWeapon.OnEquip.Invoke();
+
+        //Call for an interaction detection
+        InteractionDetection();
+    }
 }

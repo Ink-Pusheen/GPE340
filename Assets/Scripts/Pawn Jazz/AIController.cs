@@ -9,13 +9,13 @@ public class AIController : Controller
     public NavMeshAgent navAgent; //Agent for this AI for navigation
 
     [Tooltip("The target in which this AI will set as it's destination")]
-    [SerializeField] GameObject Target; //Target in which the AI will head towards
+    public GameObject Target; //Target in which the AI will head towards
 
 
     [Header("Attributes")]
 
     [Tooltip("Range at which the Nav Agent will stop from its Target"), Range(1f, 20f)]
-    [SerializeField] float stopDistance; //How far the agent stops from the target
+    public float stopDistance; //How far the agent stops from the target
 
     private Vector3 desiredVelocity = Vector3.zero; //Real time velocity that the movement will consider when conducting root motion
 
