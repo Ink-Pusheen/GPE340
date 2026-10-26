@@ -13,6 +13,15 @@ public class WA_LaserRifle : WeaponAction
 
     public Lazer beeeeeam; //Laser attributes
 
+    [Header("Accuracy")]
+
+    [Tooltip("Current accuracy of the weapon"), Range(0f, 1f)]
+    public float accuracy;
+
+    [Tooltip("How far off the fire will be based on the accuracy angle wise"), Range(0f, 45f)]
+    public float maxAccuracyDelta;
+
+
     public void Shoot()
     {
         //Raycast hit data
@@ -22,15 +31,28 @@ public class WA_LaserRifle : WeaponAction
         GameObject spawnedFire = Instantiate(laserPrefab, firePoint.position, firePoint.rotation);
         LaserBeam beam = spawnedFire.GetComponent<LaserBeam>();
 
+        //Find the angle of fire based on the accuracy system
+        Vector3 newFireDirection = firePoint.forward;
+
+        float accuracyPercent = Random.Range(0f, 1 - accuracy);
+        float accuracyRotationDegrees = Mathf.Lerp(-maxAccuracyDelta, maxAccuracyDelta, accuracyPercent);
+
+        Quaternion accuracyDelta = Quaternion.Euler(0, accuracyRotationDegrees, 0);
+
+        //Multiply for the inaccuracy, order matters on how it is multiplied
+        newFireDirection = accuracyDelta * newFireDirection;
+
         //Set the laser attributes
         beam.color = beeeeeam.color;
         beam.width = beeeeeam.width;
         beam.startPoint = firePoint.position;
-        beam.endPoint = firePoint.position + (firePoint.forward * fireDistance);
+        beam.endPoint = firePoint.position + (newFireDirection * fireDistance);
         beam.lifespan = beeeeeam.lifespawn;
 
+        
+
         //Check for raycase collision
-        if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, fireDistance))
+        if (Physics.Raycast(firePoint.position, newFireDirection, out hit, fireDistance))
         {
             //Check for the hit Health component
             Health objectHealth = hit.collider.GetComponent<Health>();

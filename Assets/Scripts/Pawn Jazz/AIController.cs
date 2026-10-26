@@ -6,16 +6,19 @@ public class AIController : Controller
     [Header("Navmesh")]
 
     [Tooltip("Navigation Agent for the currently possesed AI Humanoid Pawn")]
-    public NavMeshAgent navAgent; //Agent for this AI for navigation
+    public NavMeshAgent navAgent;
 
     [Tooltip("The target in which this AI will set as it's destination")]
-    public GameObject Target; //Target in which the AI will head towards
+    public GameObject Target;
 
 
     [Header("Attributes")]
 
     [Tooltip("Range at which the Nav Agent will stop from its Target"), Range(1f, 20f)]
-    public float stopDistance; //How far the agent stops from the target
+    public float stopDistance;
+
+    [Tooltip("Allowed firing angle"), Range(5f, 45f)]
+    public float allowedFireAngle;
 
     private Vector3 desiredVelocity = Vector3.zero; //Real time velocity that the movement will consider when conducting root motion
 
@@ -27,20 +30,12 @@ public class AIController : Controller
         //Ensure that input can be taken first
         if (!bAllowedInput) return;
 
-        //Null check for the pawn
-        if (ownedPawn == null) return;
-        //Debug.Log("Pawn Exists, DO SOMETHING"); //Forgot to make Decisions() run... whoops... Debug testing
-        //Set to seek the target
-        navAgent.SetDestination(Target.transform.position); //Set the target position to be the next area the AI heads
+        if(Target != null) SeekTarget();
 
-        //Find the velocity the agent seeks for movement
-        desiredVelocity = navAgent.desiredVelocity;
-        //Debug.Log(desiredVelocity); //Test
-        //Send to the move function for movement
-        ownedPawn.Move(desiredVelocity.normalized);
-
-        //Rotate towards the player
-        ownedPawn.RotateTowards(Target.transform.position);
+        else
+        {
+            FindTarget();
+        }
     }
 
     /// <summary>
@@ -91,5 +86,69 @@ public class AIController : Controller
     void Update()
     {
         Decisions();
+    }
+
+    /// <summary>
+    /// Constantly move towards the target location via navmesh
+    /// </summary>
+    public void SeekTarget()
+    {
+        //Null check for the pawn
+        if (ownedPawn == null) return;
+        //Debug.Log("Pawn Exists, DO SOMETHING"); //Forgot to make Decisions() run... whoops... Debug testing
+        //Set to seek the target
+        navAgent.SetDestination(Target.transform.position); //Set the target position to be the next area the AI heads
+
+        //Find the velocity the agent seeks for movement
+        desiredVelocity = navAgent.desiredVelocity;
+        //Debug.Log(desiredVelocity); //Test
+        //Send to the move function for movement
+        ownedPawn.Move(desiredVelocity.normalized);
+
+        //Rotate towards the player
+        ownedPawn.RotateTowards(Target.transform.position);
+    }
+
+    /// <summary>
+    /// Find and assign the player as the target
+    /// </summary>
+    public void FindTarget()
+    {
+        //Speak to the game manager to grab the player reference
+        GameObject player = Game_Manager.instance.player;
+
+        //Set the target
+        Target = player;
+    }
+
+    /// <summary>
+    /// Check the conditionals if this AI can start firing
+    /// </summary>
+    public virtual void TryFiring()
+    {
+        //Check if the distance is close enough to fire
+        if (Vector3.Distance(ownedPawn.transform.position, Target.transform.position) <= stopDistance)
+        {
+            //Find the vector and angle which the target is from the pawn
+            Vector3 targetVector = Target.transform.position - ownedPawn.transform.position;
+
+            float targetAngle = Vector3.Angle(ownedPawn.transform.forward, targetVector);
+
+            //If they are within the allowed firing angle, fire, though stop if they are out of the angle range
+            if (targetAngle <= allowedFireAngle)
+            {
+                ownedPawn.heldWeapon.PrimaryFireStart();
+            }
+            else
+            {
+                //If too far, stop shooting
+                ownedPawn.heldWeapon.PrimaryFireEnd();
+            }
+        }
+        else
+        {
+            //Stop firing if they go out of range
+            ownedPawn.heldWeapon.PrimaryFireEnd();
+        }
     }
 }

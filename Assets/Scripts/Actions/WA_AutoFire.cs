@@ -22,7 +22,7 @@ public class WA_AutoFire : MonoBehaviour
     {
         lastFireTime = Time.time - fireDelay; //Initial setup to allow immediate fire
     }
-
+    
     // Update is called once per frame
     void Update()
     {
