@@ -11,6 +11,11 @@ public class AIController : Controller
     [Tooltip("The target in which this AI will set as it's destination")]
     public GameObject Target;
 
+    //Reference to the target index [-1 targetting nothing]
+    [SerializeField] private int targetIndex = -1;
+
+    [Tooltip("Points in which this AI will roam between")]
+    public GameObject[] waypoints; //TODO, Implement waypoints
 
     [Header("Attributes")]
 
@@ -20,7 +25,14 @@ public class AIController : Controller
     [Tooltip("Allowed firing angle"), Range(5f, 45f)]
     public float allowedFireAngle;
 
+    [Tooltip("Range at which the agent will attempt to fire")]
+    public float fireRange;
+
     private Vector3 desiredVelocity = Vector3.zero; //Real time velocity that the movement will consider when conducting root motion
+
+    //Is the AI currently firing?
+    [SerializeField] private bool bFiring;
+
 
     /// <summary>
     /// Update function for the AI to make decisions during real time
@@ -30,12 +42,16 @@ public class AIController : Controller
         //Ensure that input can be taken first
         if (!bAllowedInput) return;
 
+        //If there is a target, seek it, move and rotate towards it
         if(Target != null) SeekTarget();
 
+        //Else find the next target respectfully
         else
         {
             FindTarget();
         }
+
+        if (targetIndex is 0) TryFiring(); //Attempt to fire if the player is identified as the target
     }
 
     /// <summary>
@@ -119,6 +135,12 @@ public class AIController : Controller
 
         //Set the target
         Target = player;
+
+        //Check if it is the player
+        if (Target.GetComponent<HumanoidPawn>().identity == 0)
+        {
+            this.targetIndex = 0; //Set the reference
+        }
     }
 
     /// <summary>
@@ -127,28 +149,47 @@ public class AIController : Controller
     public virtual void TryFiring()
     {
         //Check if the distance is close enough to fire
-        if (Vector3.Distance(ownedPawn.transform.position, Target.transform.position) <= stopDistance)
+        if (Vector3.Distance(ownedPawn.transform.position, Target.transform.position) <= fireRange)
         {
-            //Find the vector and angle which the target is from the pawn
-            Vector3 targetVector = Target.transform.position - ownedPawn.transform.position;
-
-            float targetAngle = Vector3.Angle(ownedPawn.transform.forward, targetVector);
-
             //If they are within the allowed firing angle, fire, though stop if they are out of the angle range
-            if (targetAngle <= allowedFireAngle)
+            if (inRotationRange() && !bFiring)
             {
+                bFiring = true; //Indicate that the weapon is firing
+
                 ownedPawn.heldWeapon.PrimaryFireStart();
             }
-            else
+            else if(!inRotationRange() && bFiring)
             {
+                bFiring = false; //Indicate thtat the weapon is no longer firing
+
                 //If too far, stop shooting
                 ownedPawn.heldWeapon.PrimaryFireEnd();
             }
         }
         else
         {
+            if (!bFiring) return;
+
             //Stop firing if they go out of range
             ownedPawn.heldWeapon.PrimaryFireEnd();
+
+            bFiring = false;
         }
+    }
+
+    /// <summary>
+    /// Boolean return if the target is within the allowed rotation angle
+    /// </summary>
+    /// <returns></returns>
+    private bool inRotationRange()
+    {
+        //Find the vector and angle which the target is from the pawn
+        Vector3 targetVector = Target.transform.position - ownedPawn.transform.position;
+
+        float targetAngle = Vector3.Angle(ownedPawn.transform.forward, targetVector);
+
+        if (targetAngle <= allowedFireAngle) return true;
+
+        else return false;
     }
 }

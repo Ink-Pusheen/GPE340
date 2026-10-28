@@ -953,6 +953,8 @@ MonoBehaviour:
     color: {r: 0.5606482, g: 0.39802608, b: 0.72327036, a: 1}
     lifespawn: 0.15
     width: 0.5
+  accuracy: 0
+  maxAccuracyDelta: 0
 --- !u!114 &478648205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1695,6 +1697,51 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1101983613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1101983615}
+  - component: {fileID: 1101983614}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1101983614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101983613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d36653fda622d7489ddd5b64beebef9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game_Manager
+  player: {fileID: 919132148590388880}
+--- !u!4 &1101983615
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101983613}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.95384, y: -0.004, z: -8.05781}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1231430199
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2023,6 +2070,7 @@ MonoBehaviour:
   heldWeapon: {fileID: 37765803}
   interactbleInRange: {fileID: 0}
   weaponHoldPosition: {fileID: 32239328}
+  identity: 0
   anim: {fileID: 0}
   detectionRange: 2
 --- !u!54 &1408616661
@@ -2364,6 +2412,7 @@ MonoBehaviour:
   heldWeapon: {fileID: 478648205}
   interactbleInRange: {fileID: 0}
   weaponHoldPosition: {fileID: 1391168429}
+  identity: 0
   anim: {fileID: 0}
   detectionRange: 0
 --- !u!1 &1501238663
@@ -3159,8 +3208,13 @@ MonoBehaviour:
   ownedPawn: {fileID: 1454883436}
   bAllowedInput: 1
   navAgent: {fileID: 1454883430}
-  Target: {fileID: 919132148590388880}
+  Target: {fileID: 0}
+  targetIndex: -1
+  waypoints: []
   stopDistance: 2.5
+  allowedFireAngle: 5
+  fireRange: 3.25
+  bFiring: 0
 --- !u!4 &1944336034
 Transform:
   m_ObjectHideFlags: 0
@@ -7192,7 +7246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   currentHealth: 0
-  maxHealth: 15
+  maxHealth: 99
   OnTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -8579,3 +8633,4 @@ SceneRoots:
   - {fileID: 1945803213}
   - {fileID: 1231430199}
   - {fileID: 1441216105}
+  - {fileID: 1101983615}

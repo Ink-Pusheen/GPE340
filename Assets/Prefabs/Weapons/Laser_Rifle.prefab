@@ -436,6 +436,8 @@ MonoBehaviour:
     color: {r: 0.5606482, g: 0.39802608, b: 0.72327036, a: 1}
     lifespawn: 0.15
     width: 0.5
+  accuracy: 0.6
+  maxAccuracyDelta: 5
 --- !u!114 &3588591216190422296
 MonoBehaviour:
   m_ObjectHideFlags: 0

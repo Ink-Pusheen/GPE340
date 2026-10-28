@@ -29,6 +29,9 @@ public abstract class Pawn : MonoBehaviour
     [Tooltip("Position where Weaponry is held")]
     public Transform weaponHoldPosition;
 
+    [Tooltip("Identity of the Pawn")]
+    public int identity;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public abstract void Start();
 
