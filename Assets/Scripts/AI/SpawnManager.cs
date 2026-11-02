@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class AISpawnManager : MonoBehaviour
+public class SpawnManager : MonoBehaviour
 {
     [Header("Spawning Attributes")]
 
