@@ -10,6 +10,9 @@ public abstract class Pawn : MonoBehaviour
     [Tooltip("Reference to the Controller which is currently Possessing this Pawn")]
     public Controller owningController;
 
+    [Tooltip("Health component of the pawn")]
+    public Health hp;
+
     [Header("Attributes")]
 
     [Tooltip("The speed at which this pawn will move")]

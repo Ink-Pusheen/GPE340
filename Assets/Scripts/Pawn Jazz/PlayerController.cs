@@ -1,6 +1,8 @@
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : Controller
 {
@@ -38,6 +40,18 @@ public class PlayerController : Controller
     [Header("Attributes")]
 
     [SerializeField] private int Lives = 3;
+
+
+    [Header("UI")]
+
+    [Tooltip("Image to fill based on the health")]
+    [SerializeField] private Image healthBar;
+
+    [Tooltip("Health text to display")]
+    [SerializeField] private TMP_Text healthText;
+
+    [Tooltip("Lives text to display")]
+    [SerializeField] private TMP_Text livesText;
 
     private void Awake()
     {
@@ -269,6 +283,7 @@ public class PlayerController : Controller
         if (hp is not null) //Null check
         {
             hp.OnDeath.AddListener(LoseLife);
+            hp.OnTakeDamage.AddListener(UpdateHealthBar);
         }
     }
 
@@ -288,8 +303,37 @@ public class PlayerController : Controller
 
     // Life functions
 
+    /// <summary>
+    /// Lose a life and update the UI accordingly
+    /// </summary>
     public void LoseLife()
     {
         Lives--; //Decrement the lives
+
+        //Update the life UI
+        livesText.text = $"Lives: {Lives}";
+    }
+
+    /// <summary>
+    /// Update the health bar whenever called
+    /// </summary>
+    /// <param name="currentHealth"> The current health of the pawn </param>
+    /// <param name="maxHealth"> The max health of the pawn </param>
+    public void UpdateHealthBar()
+    {
+        //Grab the current health values
+        Health hp = ownedPawn.GetComponent<Health>();
+
+        float currentHealth = hp.currentHealth;
+        float maxHealth = hp.maxHealth;
+
+        //Get the fill amount for the health bar
+        float fillAmount = currentHealth / maxHealth;
+
+        //Set the fill amount to the image
+        healthBar.fillAmount = fillAmount;
+
+        //Update the health text
+        healthText.text = $"{currentHealth}/{maxHealth}";
     }
 }

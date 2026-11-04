@@ -16,6 +16,8 @@ public class HumanoidPawn : Pawn
 
         //Grab components
         anim = GetComponent<Animator>();
+
+        hp = GetComponent<Health>();
     }
 
     // Update is called once per frame

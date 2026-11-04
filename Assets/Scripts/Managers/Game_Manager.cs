@@ -24,4 +24,17 @@ public class Game_Manager : MonoBehaviour
     {
         
     }
+
+
+    public void PauseGame()
+    {
+        //Set the timescale to none
+        Time.timeScale = 0.0f;
+    }
+
+    public void UnPauseGame()
+    {
+        //Set the timescale back to normal
+        Time.timeScale = 1.0f;
+    }
 }
