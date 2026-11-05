@@ -26,6 +26,13 @@ public abstract class Controller : MonoBehaviour
     public abstract void PossessPawn(Pawn inPawnPossession);
     public abstract void UnPossessPawn();
 
+    /// <summary>
+    /// Enables the input for this controller
+    /// </summary>
+    public void EnableInput()
+    {
+        bAllowedInput = true;
+    }
 
     /// <summary>
     /// Public function for after death functionality

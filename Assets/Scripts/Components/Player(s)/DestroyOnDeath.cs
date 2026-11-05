@@ -43,7 +43,7 @@ public class DestroyOnDeath : MonoBehaviour
 
     IEnumerator Deteriorate()
     {
-        float waitTime = Random.Range(4f, 7f);
+        float waitTime = Random.Range(4f, 5f);
 
         yield return new WaitForSeconds(waitTime);
 

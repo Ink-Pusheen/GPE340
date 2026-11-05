@@ -84,6 +84,9 @@ public class PlayerController : Controller
     void Start()
     {
         mainCam = Camera.main; //Assign the main camera
+
+        //Add the listeners as needed
+        AddListeners();
     }
 
     // Update is called once per frame
@@ -258,6 +261,12 @@ public class PlayerController : Controller
 
         //Check if pawn has health component, attaching the lose life function via observation pattern
         AddListeners();
+
+        //Update the health data to the new pawn as needed
+        UpdateHealthBar();
+
+        //Enable input
+        EnableInput();
     }
 
     /// <summary>
@@ -308,10 +317,37 @@ public class PlayerController : Controller
     /// </summary>
     public void LoseLife()
     {
+        //Disable the input
+        DisableInput();
+
         Lives--; //Decrement the lives
 
         //Update the life UI
         livesText.text = $"Lives: {Lives}";
+
+        //Check if the player has more lives
+        if (Lives is not 0)
+        {
+            //Respawn after 2 seconds
+            Invoke("Respawn", 7);
+        }
+        else
+        {
+            //Invoke game over from the game manager
+            Game_Manager.instance.GameOver();
+
+            //Destroy this controller
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// Private function to call after a few seconds to respawn if lives remain
+    /// </summary>
+    private void Respawn()
+    {
+        //Call to the game manager to respawn via spawn manager
+        Game_Manager.instance.spawnManager.SpawnPlayer(this);
     }
 
     /// <summary>
@@ -334,6 +370,6 @@ public class PlayerController : Controller
         healthBar.fillAmount = fillAmount;
 
         //Update the health text
-        healthText.text = $"{currentHealth}/{maxHealth}";
+        healthText.text = $"{currentHealth.ToString("F0")}/{maxHealth}";
     }
 }

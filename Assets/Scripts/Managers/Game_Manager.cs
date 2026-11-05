@@ -4,6 +4,11 @@ public class Game_Manager : MonoBehaviour
 {
     public static Game_Manager instance;
 
+    [Header("Other Managers")]
+
+    [Tooltip("Reference to the Spawn Manager")]
+    public SpawnManager spawnManager;
+
 
     [Tooltip("Reference to the player")]
     public GameObject player;
@@ -25,13 +30,34 @@ public class Game_Manager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Starts the game, spawning the player and starting the waves
+    /// </summary>
+    public void StartGame()
+    {
 
+    }
+
+    /// <summary>
+    /// Called when the player runs completely out of lives
+    /// </summary>
+    public void GameOver()
+    {
+
+    }
+
+    /// <summary>
+    /// Pauses the game completely
+    /// </summary>
     public void PauseGame()
     {
         //Set the timescale to none
         Time.timeScale = 0.0f;
     }
 
+    /// <summary>
+    /// Unpauses the game completely
+    /// </summary>
     public void UnPauseGame()
     {
         //Set the timescale back to normal
