@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game_Manager : MonoBehaviour
 {
@@ -10,8 +11,13 @@ public class Game_Manager : MonoBehaviour
     public SpawnManager spawnManager;
 
 
+    [Header("Gameplay Elements")]
+
     [Tooltip("Reference to the player")]
     public GameObject player;
+
+    [Tooltip("Is the game active?")]
+    public bool bPlaying;
 
     private void Awake()
     {
@@ -35,7 +41,16 @@ public class Game_Manager : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        //Set the playing flag
+        bPlaying = true;
 
+        //Swap to the main game
+        SceneSwapper.instance.SwapScene("MainGame");
+
+        //Call to spawn the player and start the game in the Spawner Manager
+        spawnManager.SpawnPlayer();
+
+        spawnManager.StartWave();
     }
 
     /// <summary>
@@ -43,7 +58,23 @@ public class Game_Manager : MonoBehaviour
     /// </summary>
     public void GameOver()
     {
+        //Display the game over screen
+        SceneSwapper.instance.EnableScene("LoseScreen");
 
+        spawnManager.currentWave = 0; //Reset the game's wave
+    }
+
+
+    public void ResetToMainMenu()
+    {
+        //Set the playing flag
+        bPlaying = false;
+
+        //Swap the scene
+        SceneSwapper.instance.SwapScene("MainMenu");
+
+        //Clean up any excess in the spawn manager
+        spawnManager.SpawnCleanup();
     }
 
     /// <summary>

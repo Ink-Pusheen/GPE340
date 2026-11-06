@@ -40,5 +40,12 @@ public abstract class Controller : MonoBehaviour
     public void DisableInput()
     {
         bAllowedInput = false;
+
+        OnDisableInput();
     }
+
+    /// <summary>
+    /// Overridable function if anything needs to happen when input is disabled
+    /// </summary>
+    public virtual void OnDisableInput() { }
 }

@@ -301,7 +301,7 @@ public class HumanoidPawn : Pawn
         }
     }
 
-    public override void SpawnWeapon(Weapon weaponSpawned)
+    public override void GiveWeapon(Weapon weaponSpawned)
     {
         //Set the new weapon reference
         heldWeapon = weaponSpawned;

@@ -12,9 +12,25 @@ public class GameScene
 
 public class SceneSwapper : MonoBehaviour
 {
+    public static SceneSwapper instance;
+
     [Tooltip("Array of Scenes that are interchangeable")]
     public GameScene[] scenes;
 
+
+
+    public void Awake()
+    {
+        instance = this; //Set the instance
+    }
+
+    private void Start()
+    {
+        //Disable all scenes and only open the main menu to have things preloaded
+        DisableAllScenes();
+
+        EnableScene("MainMenu");
+    }
 
     /// <summary>
     /// Enables the specified state via string
@@ -22,6 +38,9 @@ public class SceneSwapper : MonoBehaviour
     /// <param name="sceneName"> Which scene to swap into </param>
     public void SwapScene(string sceneName)
     {
+        //Disable all scenes
+        DisableAllScenes();
+
         //Loop through all the scenes, enabling the scene name that matches
         for (int scene = 0; scene < scenes.Length; scene++)
         {
@@ -111,5 +130,15 @@ public class SceneSwapper : MonoBehaviour
         {
             scenes[scene].sceneObject.SetActive(false);
         }
+    }
+
+    /// <summary>
+    /// Simply, quit
+    /// </summary>
+    public void QuitGame()
+    {
+        Debug.Log("Quit game");
+
+        Application.Quit();
     }
 }

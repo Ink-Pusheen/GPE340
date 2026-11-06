@@ -93,7 +93,11 @@ public class PlayerController : Controller
     void Update()
     {
         //Ensure that input can be taken first
-        if (!bAllowedInput) return;
+        if (!bAllowedInput)
+        {
+            ownedPawn.Move(Vector3.zero); //Ensure the pawn stops
+            return;
+        }
 
         Decisions(); //Conduct all input of the player during runtime
     }
@@ -293,6 +297,8 @@ public class PlayerController : Controller
         {
             hp.OnDeath.AddListener(LoseLife);
             hp.OnTakeDamage.AddListener(UpdateHealthBar);
+
+            hp.OnDeath.AddListener(DisableInput);
         }
     }
 
@@ -307,6 +313,17 @@ public class PlayerController : Controller
         if (hp is not null) //Null check
         {
             hp.OnDeath.RemoveListener(LoseLife);
+        }
+    }
+
+
+    public override void OnDisableInput()
+    {
+        //Ensure any sort of fire stops
+        if (ownedPawn.heldWeapon != null)
+        {
+            ownedPawn.heldWeapon.OnPrimaryFireEnd.Invoke();
+            ownedPawn.heldWeapon.OnSecondaryFireEnd.Invoke();
         }
     }
 

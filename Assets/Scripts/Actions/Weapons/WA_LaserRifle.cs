@@ -58,6 +58,8 @@ public class WA_LaserRifle : WeaponAction
             Health objectHealth = hit.collider.GetComponent<Health>();
             if (objectHealth is not null) //Null check
             {
+                if (objectHealth.currentHealth is 0) return; //Don't proceed if the corpse is already dead
+
                 //Cause damage accordingly
                 objectHealth.TakeDamage(damageToDeal); //Default 5, change later
             }

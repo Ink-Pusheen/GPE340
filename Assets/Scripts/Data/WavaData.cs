@@ -1,16 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class WavaData : MonoBehaviour
+[System.Serializable]
+public class WavaData
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [Tooltip("Wave name")]
+    public string name;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [Tooltip("List of enemies that can appear, the pawn gameobjects")]
+    public List<GameObject> spawnableEnemies = new();
+
+    [Tooltip("How many enemies to spawn within this wave")]
+    public int spawnCount;
+
+    [Tooltip("Enemy weaponry this wave")]
+    public List<GameObject> enemyWeapons = new();
 }

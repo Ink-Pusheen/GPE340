@@ -69,6 +69,11 @@ public class AIController : Controller
         //Tell the new pawn this is the new controller
         ownedPawn.Possess(this);
 
+        //Grab the navmeshagent component
+        navAgent = ownedPawn.GetComponent<NavMeshAgent>();
+
+        if (navAgent is null) Debug.LogError("Where's mah navmesh?");
+
         //Set Navmesh Properties
         navAgent.speed = ownedPawn.moveSpeed;
         navAgent.angularSpeed = ownedPawn.rotateSpeed;
@@ -76,6 +81,11 @@ public class AIController : Controller
         //Disable movement and rotation of the agent
         navAgent.updatePosition = false;
         navAgent.updateRotation = false;
+
+        //Grab the hp component to subscribe to disable input
+        Health pawnHP = ownedPawn.GetComponent<Health>();
+
+        pawnHP.OnDeath.AddListener(DisableInput);
     }
 
     /// <summary>
@@ -94,13 +104,14 @@ public class AIController : Controller
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //Temp for testing
-        if (ownedPawn is not null) PossessPawn(ownedPawn);
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!bAllowedInput) return; //Don't allow input if this is false
+
         Decisions();
     }
 
@@ -130,14 +141,19 @@ public class AIController : Controller
     /// </summary>
     public void FindTarget()
     {
-        //Speak to the game manager to grab the player reference
-        GameObject player = Game_Manager.instance.player;
+        //Return if the game manager has no instance and if the player isn't defined
+        if(Game_Manager.instance == null || Game_Manager.instance.player == null) return;
+
+        //Get the pawn of the controller
+        GameObject playerPawn = Game_Manager.instance.player.GetComponent<PlayerController>().ownedPawn.gameObject;
 
         //Set the target
-        Target = player;
+        Target = playerPawn;
+
+        HumanoidPawn pawnToCheck = Target.GetComponent<HumanoidPawn>();
 
         //Check if it is the player
-        if (Target.GetComponent<HumanoidPawn>().identity == 0)
+        if (Target != null && pawnToCheck is not null && pawnToCheck.identity == 0)
         {
             this.targetIndex = 0; //Set the reference
         }

@@ -23,41 +23,104 @@ public class SpawnManager : MonoBehaviour
     [Tooltip("Player Controller Prefab")]
     public GameObject playerControllerPrefab;
 
+    [Tooltip("Basic Blaster for the player to spawn with")]
+    public GameObject playerSpawnBlaster;
 
     [Header("Enemy Spawns")]
 
-    [Tooltip("Active list of possible enemies to spawn")]
-    public List<GameObject> spawnableEnemies = new();
+    [Tooltip("Controller for the AI")]
+    public GameObject aiControllerPrefab;
 
-    [Tooltip("List of enemies that can be added at round intervals")]
-    public List<GameObject> stanbyEnemies = new();
+    [Tooltip("Time between enemy spawns")]
+    public float enemySpawnTimer;
 
-    [Tooltip("Array in which what waves new enemies will be added")]
-    public int[] enemyAppearanceWaves;
+    [Tooltip("Last enemy spawn time")]
+    public float enemySpawnDelay;
+
+    [Tooltip("Should enemies be spawning?")]
+    [SerializeField] private bool bRunSpawner;
+
+
+    [Header("Wave Data")]
+
+    [Tooltip("Array of the waves of this game")]
+    public WavaData[] waves;
+
+    [Tooltip("Current wave the player is on")]
+    public int currentWave;
+
+
+    [Header("Current Wave Information")]
+
+    [Tooltip("Remaining enemies to spawn")]
+    public int roundEnemies;
+
+    [Tooltip("List of active enemy pawn units")]
+    public List<GameObject> activeEnemyPawns = new();
+
+    [Tooltip("List of active enemy controller units")]
+    public List<GameObject> activeEnemyControllers = new();
+
 
     /// <summary>
     /// Select random spawners to spawn enemies at for the round
     /// </summary>
-    /// <param name="enemiesToSpawn"> How many enemies to spawn </param>
-    public void SpawnEnemies(int enemiesToSpawn)
+    public void SpawnEnemy()
     {
-        //Clamp the value to ensure it doesn't over
-        enemiesToSpawn = Mathf.Clamp(enemiesToSpawn, 0, enemySpawnPoints.Count);
+        //Decrement wave enemies
+        roundEnemies--;
 
-        //Loop through the input iterations
-        for (int spawn = 0; spawn < enemiesToSpawn; spawn++)
-        {
-            //Select a random spawnpoint
-            int selectedSpawn = Random.Range(0, enemySpawnPoints.Count);
+        //Select a random spawnpoint
+        int selectedSpawn = Random.Range(0, enemySpawnPoints.Count);
 
-            //Spawn the enemy at the selected spawn point [TODO, write code to summon different enemies based on wave]
+        //Select a random enemy off index
+        int enemyToSpawn = Random.Range(0, waves[currentWave].spawnableEnemies.Count);
 
+        //Spawn the enemy at the selected spawn point [TODO, write code to summon different enemies based on wave]
+        GameObject SpawnedEnemy = Instantiate(waves[currentWave].spawnableEnemies[enemyToSpawn], enemySpawnPoints[selectedSpawn].transform.position, enemySpawnPoints[selectedSpawn].transform.rotation);
+        GameObject SpawnedAIController = Instantiate(aiControllerPrefab, Vector3.zero, Quaternion.identity);
 
-            //Alter the lists, removing it from the spawn points and putting them in the used
-            usedSpawnpoints.Add(enemySpawnPoints[selectedSpawn]);
+        //Set up the possession of the two spawned components
+        HumanoidPawn aiPawn = SpawnedEnemy.GetComponent<HumanoidPawn>();
+        AIController aiController = SpawnedAIController.GetComponent<AIController>();
 
-            enemySpawnPoints.RemoveAt(selectedSpawn);
-        }
+        if (aiPawn is null || aiController is null) Debug.LogError("Pawn or Controller is null");
+
+        aiController.PossessPawn(aiPawn);
+        aiPawn.Possess(aiController);
+
+        //Select a random weapon and give it to the ai
+        int selectedWeapon = Random.Range(0, waves[currentWave].enemyWeapons.Count);
+
+        GameObject SpawnedWeapon = Instantiate(waves[currentWave].enemyWeapons[selectedWeapon]);
+
+        Weapon weaponSpawn = SpawnedWeapon.GetComponent<Weapon>();
+
+        aiPawn.GiveWeapon(weaponSpawn); //Give the weapon to the ai
+
+        //Add the enemy pieces to their respective lists
+        activeEnemyControllers.Add(SpawnedAIController);
+        activeEnemyPawns.Add(SpawnedEnemy);
+
+        //Alter the lists, removing it from the spawn points and putting them in the used
+        usedSpawnpoints.Add(enemySpawnPoints[selectedSpawn]);
+
+        enemySpawnPoints.RemoveAt(selectedSpawn);
+    }
+
+    /// <summary>
+    /// When an enemy is defeated, remove them from these lists
+    /// </summary>
+    /// <param name="aiPawn"> The pawn of the ai removed </param>
+    /// <param name="aiController"> The controller of the ai removed </param>
+    public void ClearEnemyFromList(GameObject aiPawn, GameObject aiController)
+    {
+        //Clear the identified items from the lists
+        activeEnemyControllers.Remove(aiController);
+        activeEnemyPawns.Remove(aiPawn);
+
+        //Run a check for progression
+        CheckWaveProgress();
     }
 
     /// <summary>
@@ -65,8 +128,11 @@ public class SpawnManager : MonoBehaviour
     /// </summary>
     public void SpawnPlayer()
     {
+        //Select a position for the player to spawn
+        Transform spawnlocation = playerSpawnPoints[Random.Range(0, playerSpawnPoints.Count)];
+
         //Create the pawn and controller
-        GameObject PlayerPawn = Instantiate(playerPawnPrefab);
+        GameObject PlayerPawn = Instantiate(playerPawnPrefab, spawnlocation.position, spawnlocation.rotation);
 
         GameObject PlayerController = Instantiate(playerControllerPrefab);
 
@@ -79,6 +145,11 @@ public class SpawnManager : MonoBehaviour
         playerControllerScript.PossessPawn(playerPawnScript);
 
         playerPawnScript.Possess(playerControllerScript);
+
+        //Create the weapon and give it to the player
+        Weapon spawnedBlaster = Instantiate(playerSpawnBlaster).GetComponent<Weapon>();
+
+        playerPawnScript.GiveWeapon(spawnedBlaster);
 
         //Assign the player controller prefab to the game manager
         Game_Manager.instance.player = PlayerController;
@@ -100,6 +171,11 @@ public class SpawnManager : MonoBehaviour
         inPlayerController.PossessPawn(PlayerPawnScript);
 
         PlayerPawnScript.Possess(inPlayerController);
+
+        //Create the weapon and give it to the player
+        Weapon spawnedBlaster = Instantiate(playerSpawnBlaster).GetComponent<Weapon>();
+
+        PlayerPawnScript.GiveWeapon(spawnedBlaster);
     }
 
     /// <summary>
@@ -121,20 +197,125 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+
+    public void CheckWaveProgress()
+    {
+        //Check if there is no more spawns and if the enemy list is clear
+        if (roundEnemies is 0 && activeEnemyPawns.Count is 0)
+        {
+            //Progress the wave if so
+            ProgressWave();
+        }
+    }
+
     /// <summary>
     /// Function to check if the current wave unlocks a new spawnable enemy
     /// </summary>
-    /// <param name="currentWave"> Input of the current wave </param>
-    public void ProgressWave(int currentWave)
+    public void ProgressWave()
     {
-        //Check if the wave value corresponds to an unlock wave
-        if (enemyAppearanceWaves.Contains(currentWave))
-        {
-            //Add the new enemy to the pool
-            spawnableEnemies.Add(stanbyEnemies[0]);
+        //Increment the current wave
+        currentWave++;
 
-            //Remove it from the standby pool
-            stanbyEnemies.RemoveAt(0);
+        if (currentWave >= waves.Count())
+        {
+            Debug.Log("Game won, swap to win scene");
+
+            //Disable the player input
+            Game_Manager.instance.player.GetComponent<PlayerController>().DisableInput();
+
+            //Display the win scene
+            SceneSwapper.instance.EnableScene("WinScreen");
+        }
+
+        else
+        {
+            Debug.Log("Progress to the next wave");
+
+            //Start the next wave
+            StartWave();
+        }
+    }
+
+
+    public void StartWave()
+    {
+        Debug.Log($"Wave {currentWave + 1}");
+
+        //Set the amount of enemies that will be spawning
+        roundEnemies = waves[currentWave].spawnCount;
+
+        //Set the timer to spawn an enemy near immediately
+        enemySpawnTimer = enemySpawnDelay - 1f;
+
+        //Enable the spawner
+        bRunSpawner = true;
+    }
+
+    private void Update()
+    {
+        if (bRunSpawner)
+        {
+            enemySpawnTimer += Time.deltaTime; //Over time increment, so when the game pauses, this does too
+
+            if (enemySpawnTimer >= enemySpawnDelay)
+            {
+                //Reset the spawn timer
+                enemySpawnTimer = 0;
+
+                //Spawn an enemy
+                SpawnEnemy();
+
+                //Check if there are any enemies remaining
+                if (roundEnemies is 0)
+                {
+                    //Stop the spawner
+                    bRunSpawner = false;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Completely stop the spawner via outside influence
+    /// </summary>
+    public void StopSpawner()
+    {
+        bRunSpawner = false;
+    }
+
+    /// <summary>
+    /// Clean up any lingering controllers and AI in the scene
+    /// </summary>
+    public void SpawnCleanup()
+    {
+        //Loop through and clean up any remainders
+        foreach (GameObject aiPawn in activeEnemyPawns)
+        {
+            Destroy(aiPawn);
+        }
+
+        foreach (GameObject aiController in activeEnemyControllers)
+        {
+            Destroy(aiController);
+        }
+
+        //Clear the lists
+        activeEnemyPawns.Clear();
+        activeEnemyControllers.Clear();
+
+        //TODO: Do the same thing with just.. weapons.. that are lying around..
+
+        //If the player is still active, delete
+        if (Game_Manager.instance.player != null)
+        {
+            //Grab the controller to access the pawn
+            PlayerController pController = Game_Manager.instance.player.GetComponent<PlayerController>();
+
+            //Delete the two
+            Destroy(pController.ownedPawn.gameObject);
+            Destroy(pController.gameObject);
+
+            Game_Manager.instance.player = null; //Set this back to null
         }
     }
 }

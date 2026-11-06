@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 public class Health : MonoBehaviour
@@ -53,6 +54,17 @@ public class Health : MonoBehaviour
 
         //Run the on death Unity Event
         OnDeath.Invoke();
+
+        //Check if this is on an AI pawn via navmesh existence
+        NavMeshAgent nav = GetComponent<NavMeshAgent>();
+
+        //If not null, remove this pawn and the controller from the spawn manager
+        if (nav is not null)
+        {
+            GameObject pawnController = GetComponent<HumanoidPawn>().owningController.gameObject;
+
+            Game_Manager.instance.spawnManager.ClearEnemyFromList(gameObject, pawnController);
+        }
     }
 
     // Set attributes

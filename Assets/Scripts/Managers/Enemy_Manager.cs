@@ -67,7 +67,7 @@ public class Enemy_Manager : MonoBehaviour
             Weapon newWeapon = spawnedWeapon.GetComponent<Weapon>();
 
             //Spawn the weapon into the enemies hands
-            enemyPawn.SpawnWeapon(newWeapon);
+            enemyPawn.GiveWeapon(newWeapon);
         }
 
         //Create the controller for this AI

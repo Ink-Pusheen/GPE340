@@ -78,5 +78,5 @@ public abstract class Pawn : MonoBehaviour
     /// <summary>
     /// Forcefully equipts a given weapon 
     /// </summary>
-    public abstract void SpawnWeapon(Weapon weaponSpawned);
+    public abstract void GiveWeapon(Weapon weaponSpawned);
 }
