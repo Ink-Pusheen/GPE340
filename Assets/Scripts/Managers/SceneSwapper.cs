@@ -1,6 +1,6 @@
 using UnityEngine;
 
-
+[System.Serializable]
 public class GameScene
 {
     [Tooltip("Name of the game object scene")]

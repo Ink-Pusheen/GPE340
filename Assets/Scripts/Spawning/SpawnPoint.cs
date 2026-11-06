@@ -24,17 +24,27 @@ public class SpawnPoint : MonoBehaviour
 
                 gizmoColor = Color.blue;
 
+                //Add this to the possible spawn points for the player
+                Game_Manager.instance.spawnManager.playerSpawnPoints.Add(transform);
+
                 break;
 
             case SpawnType.Enemy:
 
                 gizmoColor = Color.red;
 
+                //Add this to the possible spawn points for enemies
+                Game_Manager.instance.spawnManager.enemySpawnPoints.Add(transform);
+
                 break;
 
             case SpawnType.Both:
 
                 gizmoColor = Color.green;
+
+                //Add this spawner to both lists in the spawn manager
+                Game_Manager.instance.spawnManager.playerSpawnPoints.Add(transform);
+                Game_Manager.instance.spawnManager.enemySpawnPoints.Add(transform);
 
                 break;
         }
