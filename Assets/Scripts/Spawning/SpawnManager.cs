@@ -161,8 +161,11 @@ public class SpawnManager : MonoBehaviour
     /// <param name="inPlayerPawn"> The controller to assign the spawned pawn to </param>
     public void SpawnPlayer(Controller inPlayerController)
     {
+        //Select a position for the player to spawn
+        Transform spawnlocation = playerSpawnPoints[Random.Range(0, playerSpawnPoints.Count)];
+
         //Spawn the pawn
-        GameObject PlayerPawn = Instantiate(playerPawnPrefab);
+        GameObject PlayerPawn = Instantiate(playerPawnPrefab, spawnlocation.transform.position, spawnlocation.transform.rotation);
 
         //Grab the component
         Pawn PlayerPawnScript = PlayerPawn.GetComponent<Pawn>();
@@ -176,7 +179,7 @@ public class SpawnManager : MonoBehaviour
         Weapon spawnedBlaster = Instantiate(playerSpawnBlaster).GetComponent<Weapon>();
 
         PlayerPawnScript.GiveWeapon(spawnedBlaster);
-        Debug.Log("Player spawned with controller input");
+        //Debug.Log("Player spawned with controller input"); //Dupe bug moment
     }
 
     /// <summary>

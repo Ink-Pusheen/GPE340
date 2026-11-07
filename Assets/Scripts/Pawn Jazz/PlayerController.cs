@@ -90,7 +90,7 @@ public class PlayerController : Controller
         mainCam = Camera.main; //Assign the main camera
 
         //Add the listeners as needed
-        AddListeners();
+        //AddListeners();
     }
 
     // Update is called once per frame

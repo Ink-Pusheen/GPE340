@@ -18,7 +18,7 @@ public class Health : MonoBehaviour
     public UnityEvent OnDeath;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         currentHealth = maxHealth; //Set max health
     }
