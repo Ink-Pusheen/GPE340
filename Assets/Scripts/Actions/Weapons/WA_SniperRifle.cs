@@ -14,6 +14,15 @@ public class WA_SniperRifle : WeaponAction
     [Tooltip("Damage this weapon's bullet will deal")]
     public float damageToDeal;
 
+
+    [Header("Accuracy")]
+
+    [Tooltip("Current accuracy of the weapon"), Range(0f, 1f)]
+    public float accuracy;
+
+    [Tooltip("How far off the fire will be based on the accuracy angle wise"), Range(0f, 45f)]
+    public float maxAccuracyDelta;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -31,8 +40,20 @@ public class WA_SniperRifle : WeaponAction
     /// </summary>
     public void Shoot()
     {
+        //Set up the firing accuracy
+        Vector3 newFireDirection = firePoint.forward;
+
+        float accuracyPercent = UnityEngine.Random.Range(0f, 1 - accuracy);
+        float accuracyRotationDegree = Mathf.Lerp(-maxAccuracyDelta, maxAccuracyDelta, accuracyPercent);
+
+        Quaternion accuracyDelta = Quaternion.Euler(0, accuracyRotationDegree, 0);
+
+        newFireDirection = accuracyDelta * newFireDirection;
+
         //Instantiate the bullet corresponding the fire point
-        GameObject spawnedBullet = Instantiate(bullet, firePoint.position, firePoint.rotation);
+        GameObject spawnedBullet = Instantiate(bullet, firePoint.position + newFireDirection, Quaternion.identity);
+
+        spawnedBullet.transform.forward = newFireDirection; //Set the rotation
 
         //Grab the bullet Component and assign the values
         Bullet bulletScript = spawnedBullet.GetComponent<Bullet>();

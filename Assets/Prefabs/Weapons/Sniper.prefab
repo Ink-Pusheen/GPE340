@@ -276,6 +276,8 @@ MonoBehaviour:
   bullet: {fileID: 3017135937452516426, guid: 240b91199130fb64589ef0450f44879f, type: 3}
   fireForce: 12
   damageToDeal: 2
+  accuracy: 0.35
+  maxAccuracyDelta: 25
 --- !u!114 &709528853865463404
 MonoBehaviour:
   m_ObjectHideFlags: 0

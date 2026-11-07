@@ -103,9 +103,9 @@ public class SpawnManager : MonoBehaviour
         activeEnemyPawns.Add(SpawnedEnemy);
 
         //Alter the lists, removing it from the spawn points and putting them in the used
-        usedSpawnpoints.Add(enemySpawnPoints[selectedSpawn]);
+        //usedSpawnpoints.Add(enemySpawnPoints[selectedSpawn]);
 
-        enemySpawnPoints.RemoveAt(selectedSpawn);
+        //enemySpawnPoints.RemoveAt(selectedSpawn);
     }
 
     /// <summary>
@@ -176,6 +176,7 @@ public class SpawnManager : MonoBehaviour
         Weapon spawnedBlaster = Instantiate(playerSpawnBlaster).GetComponent<Weapon>();
 
         PlayerPawnScript.GiveWeapon(spawnedBlaster);
+        Debug.Log("Player spawned with controller input");
     }
 
     /// <summary>
@@ -253,6 +254,9 @@ public class SpawnManager : MonoBehaviour
 
     private void Update()
     {
+        //Ensure the game isn't paused
+        if (Game_Manager.instance.bPaused) return;
+
         if (bRunSpawner)
         {
             enemySpawnTimer += Time.deltaTime; //Over time increment, so when the game pauses, this does too

@@ -57,7 +57,7 @@ public class FollowCamera : MonoBehaviour
             //Get the player controller component
             PlayerController playerController = Game_Manager.instance.player.GetComponent<PlayerController>();
 
-            if (playerController is not null) //Ensure the controller isn't null
+            if (playerController is not null && playerController.ownedPawn != null) //Ensure the controller isn't null
             {
                 ObjectToFollow = playerController.ownedPawn.gameObject; //Set the target
             }

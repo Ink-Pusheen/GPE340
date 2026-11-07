@@ -31,6 +31,8 @@ public class PlayerController : Controller
     private InputAction grabWeapon; //Input for grabbing nearby weaponry
     private InputAction dropWeapon; //Input to drop held weaponry
 
+    private InputAction pause; //Input to pause and unpause the game
+
     [Header("Camera")]
 
     private Camera mainCam; //Assignment of the main camera within the scene
@@ -75,6 +77,8 @@ public class PlayerController : Controller
 
             grabWeapon = pInput.actions.FindAction("GrabWeapon");
             dropWeapon = pInput.actions.FindAction("DropWeapon");
+
+            pause = pInput.actions.FindAction("Pause");
         }
 
 
@@ -92,13 +96,6 @@ public class PlayerController : Controller
     // Update is called once per frame
     void Update()
     {
-        //Ensure that input can be taken first
-        if (!bAllowedInput)
-        {
-            ownedPawn.Move(Vector3.zero); //Ensure the pawn stops
-            return;
-        }
-
         Decisions(); //Conduct all input of the player during runtime
     }
 
@@ -107,6 +104,22 @@ public class PlayerController : Controller
     /// </summary>
     public override void Decisions()
     {
+        if (pause.WasPressedThisFrame())
+        {
+            //Ensure the game manager exists
+            if (Game_Manager.instance == null) return;
+
+            //Call to the game manager to swap the pause state
+            Game_Manager.instance.TogglePauseState();
+        }
+
+        //Ensure that input can be taken first
+        if (!bAllowedInput || Game_Manager.instance.bPaused)
+        {
+            if (ownedPawn != null) ownedPawn.Move(Vector3.zero); //Ensure the pawn stops
+            return;
+        }
+
         if (!bUsingController) //Not using Controller
         {
             //Read the horizontal and vertical input from the keyboard
@@ -239,7 +252,6 @@ public class PlayerController : Controller
                 ownedPawn.DropWeapon();
             }
         }
-
     }
 
     /// <summary>

@@ -112,6 +112,9 @@ public class AIController : Controller
     {
         if(!bAllowedInput) return; //Don't allow input if this is false
 
+        //Ensure the game isn't paused
+        if (Game_Manager.instance.bPaused) return;
+
         Decisions();
     }
 
@@ -144,6 +147,9 @@ public class AIController : Controller
         //Return if the game manager has no instance and if the player isn't defined
         if(Game_Manager.instance == null || Game_Manager.instance.player == null) return;
 
+        //Return if this is null
+        if (Game_Manager.instance.player.GetComponent<PlayerController>().ownedPawn == null) return;
+
         //Get the pawn of the controller
         GameObject playerPawn = Game_Manager.instance.player.GetComponent<PlayerController>().ownedPawn.gameObject;
 
@@ -164,6 +170,9 @@ public class AIController : Controller
     /// </summary>
     public virtual void TryFiring()
     {
+        //Ensure the target isn't null
+        if (Target == null) return;
+
         //Check if the distance is close enough to fire
         if (Vector3.Distance(ownedPawn.transform.position, Target.transform.position) <= fireRange)
         {

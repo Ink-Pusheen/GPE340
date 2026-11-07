@@ -19,6 +19,9 @@ public class Game_Manager : MonoBehaviour
     [Tooltip("Is the game active?")]
     public bool bPlaying;
 
+    [Tooltip("Is the game paused?")]
+    public bool bPaused;
+
     private void Awake()
     {
         instance = this; //Set the instance
@@ -70,6 +73,9 @@ public class Game_Manager : MonoBehaviour
         //Set the playing flag
         bPlaying = false;
 
+        //Return the time momentum
+        Time.timeScale = 1f;
+
         //Swap the scene
         SceneSwapper.instance.SwapScene("MainMenu");
 
@@ -77,11 +83,36 @@ public class Game_Manager : MonoBehaviour
         spawnManager.SpawnCleanup();
     }
 
+
+    public void TogglePauseState()
+    {
+        //Swap the pause state
+        bPaused = !bPaused;
+
+        if (bPaused) //Pause the game
+        {
+            PauseGame();
+
+            //Disable the main set of player input
+            player.GetComponent<PlayerController>().DisableInput();
+        }
+        else //Else unpause the game
+        {
+            UnPauseGame();
+
+            //Re-enable the player input
+            player.GetComponent<PlayerController>().EnableInput();
+        }
+    }
+
     /// <summary>
     /// Pauses the game completely
     /// </summary>
     public void PauseGame()
     {
+        //Enable the pause menu
+        SceneSwapper.instance.EnableScene("PauseScreen");
+
         //Set the timescale to none
         Time.timeScale = 0.0f;
     }
@@ -91,6 +122,9 @@ public class Game_Manager : MonoBehaviour
     /// </summary>
     public void UnPauseGame()
     {
+        //Disable the pause menu
+        SceneSwapper.instance.DisableScene("PauseScreen");
+
         //Set the timescale back to normal
         Time.timeScale = 1.0f;
     }

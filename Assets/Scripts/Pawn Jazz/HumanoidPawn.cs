@@ -89,6 +89,9 @@ public class HumanoidPawn : Pawn
     //This is run after the animation runs
     public void OnAnimatorMove()
     {
+        //Ansure the animator isn't null
+        if (anim == null) return;
+
         //Set the root position and rotation
         transform.position = anim.rootPosition;
         transform.rotation = anim.rootRotation;
