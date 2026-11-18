@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class GameScene
@@ -17,7 +18,8 @@ public class SceneSwapper : MonoBehaviour
     [Tooltip("Array of Scenes that are interchangeable")]
     public GameScene[] scenes;
 
-
+    [Tooltip("Toggle of Startup Menu Altering")]
+    public bool bShouldSetupScene;
 
     public void Awake()
     {
@@ -26,6 +28,8 @@ public class SceneSwapper : MonoBehaviour
 
     private void Start()
     {
+        if (!bShouldSetupScene) return; //Don't conduct if this is false
+
         //Disable all scenes and only open the main menu to have things preloaded
         DisableAllScenes();
 
@@ -130,6 +134,25 @@ public class SceneSwapper : MonoBehaviour
         {
             scenes[scene].sceneObject.SetActive(false);
         }
+    }
+
+
+    /// <summary>
+    /// Load into another scene via string
+    /// </summary>
+    /// <param name="sceneName"> Name of the loaded scene </param>
+    public void LoadSceneByName(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+
+    /// <summary>
+    /// Load into another scene via integer
+    /// </summary>
+    /// <param name="sceneIndex"></param>
+    public void LoadSceneByInt(int sceneIndex)
+    {
+        SceneManager.LoadScene(sceneIndex);
     }
 
     /// <summary>

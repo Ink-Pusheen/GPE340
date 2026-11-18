@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+
     [Header("Spawning Attributes")]
 
     [Tooltip("List of active points enemies can spawn at")]
@@ -130,7 +131,7 @@ public class SpawnManager : MonoBehaviour
     {
         //Select a position for the player to spawn
         Transform spawnlocation = playerSpawnPoints[Random.Range(0, playerSpawnPoints.Count)];
-
+        Debug.Log("Spawn the player");
         //Create the pawn and controller
         GameObject PlayerPawn = Instantiate(playerPawnPrefab, spawnlocation.position, spawnlocation.rotation);
 
@@ -244,7 +245,7 @@ public class SpawnManager : MonoBehaviour
     public void StartWave()
     {
         Debug.Log($"Wave {currentWave + 1}");
-
+        Debug.Log("Start the wave");
         //Set the amount of enemies that will be spawning
         roundEnemies = waves[currentWave].spawnCount;
 
@@ -310,7 +311,8 @@ public class SpawnManager : MonoBehaviour
         activeEnemyPawns.Clear();
         activeEnemyControllers.Clear();
 
-        //TODO: Do the same thing with just.. weapons.. that are lying around..
+        enemySpawnPoints.Clear();
+        playerSpawnPoints.Clear();
 
         //If the player is still active, delete
         if (Game_Manager.instance.player != null)

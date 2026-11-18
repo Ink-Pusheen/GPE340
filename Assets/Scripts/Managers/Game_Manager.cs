@@ -22,22 +22,29 @@ public class Game_Manager : MonoBehaviour
     [Tooltip("Is the game paused?")]
     public bool bPaused;
 
+    [Tooltip("Start the game on load")]
+    public bool bLoadGameImmediately;
+
     private void Awake()
     {
-        instance = this; //Set the instance
+        if (instance is null)
+        {
+            instance = this; //Set the instance
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        //Invoke the start game after a short delay to let things load
+        if (bLoadGameImmediately) Invoke("StartGame", 0.15f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     /// <summary>
     /// Starts the game, spawning the player and starting the waves
@@ -46,9 +53,6 @@ public class Game_Manager : MonoBehaviour
     {
         //Set the playing flag
         bPlaying = true;
-
-        //Swap to the main game
-        SceneSwapper.instance.SwapScene("MainGame");
 
         //Call to spawn the player and start the game in the Spawner Manager
         spawnManager.SpawnPlayer();
@@ -70,17 +74,20 @@ public class Game_Manager : MonoBehaviour
 
     public void ResetToMainMenu()
     {
-        //Set the playing flag
+        //Set the playing flag and unflag the pause
         bPlaying = false;
+        bPaused = false;
 
         //Return the time momentum
         Time.timeScale = 1f;
 
         //Swap the scene
-        SceneSwapper.instance.SwapScene("MainMenu");
+        //SceneSwapper.instance.SwapScene("MainMenu");
 
         //Clean up any excess in the spawn manager
         spawnManager.SpawnCleanup();
+
+        SceneSwapper.instance.LoadSceneByName("Main_Menu");
     }
 
 
